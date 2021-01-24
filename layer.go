@@ -30,6 +30,7 @@ type pathinfo struct {
 	Start   bool   `json:"s"`
 	X       int    `json:"x"`
 	Y       int    `json:"y"`
+	Erase   bool   `json:"e"`
 }
 
 func NewLayer() layer {
