@@ -1,0 +1,39 @@
+<html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta property="og:title" content="paint-chat.com" />
+    <meta property="og:description" content="a simple digital drawing community">
+    <meta property="og:image" content="http://paint-chat.com/static/screenshot.png" />
+    <title>paint-chat.com</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/sketchboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="/static/paintchat.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            initialize("{{.}}");
+        });
+    </script>
+
+</head>
+
+<body>
+    <div id="canvasDiv">
+        <div id="menu">
+            <div class="menubutton" onclick="copyLink()"><i class="fa fa-clone"></i></div>
+            <div class="menubutton" onclick="setThickness(10)"><i class="fa fa-circle"></i></div>
+            <div class="menubutton" onclick="setThickness(5)"><i class="fa fa-circle" style="font-size: 12px;"></i>
+            </div>
+            <div class="menubutton" onclick="setThickness(1)"><i class="fa fa-circle" style="font-size: 8px;"></i>
+            </div>
+        </div>
+        <div id="title">
+            <h1>{{.}}</h1>
+        </div>
+        <canvas id="canvasSignature" width="600px" height="600px" style="position:absolute;"></canvas>
+    </div>
+</body>
+
+</html>
