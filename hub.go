@@ -1,5 +1,9 @@
 package main
 
+import (
+	"encoding/json"
+)
+
 type message struct {
 	data []byte
 	room string
@@ -32,6 +36,14 @@ func (h *hub) run() {
 			if connections == nil {
 				connections = make(map[*connection]bool)
 				h.rooms[s.room] = connections
+			}
+			for c := range connections {
+				for _, pinfo := range c.history {
+					bytemsg, err := json.Marshal(pinfo)
+					if err == nil {
+						s.conn.send <- bytemsg
+					}
+				}
 			}
 			h.rooms[s.room][s.conn] = true
 		case s := <-h.unregister:

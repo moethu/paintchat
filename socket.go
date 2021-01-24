@@ -24,9 +24,10 @@ var upgrader = websocket.Upgrader{
 }
 
 type connection struct {
-	ws    *websocket.Conn
-	layer layer
-	send  chan []byte
+	ws      *websocket.Conn
+	layer   layer
+	send    chan []byte
+	history []pathinfo
 }
 
 func (s subscription) readPump() {
@@ -51,6 +52,7 @@ func (s subscription) readPump() {
 		if err := json.Unmarshal(msg, &pinfo); err == nil {
 			pinfo.Color = c.layer.color
 			pinfo.Name = c.layer.name
+			c.history = append(c.history, pinfo)
 			bytemsg, err := json.Marshal(pinfo)
 			if err == nil {
 				m := message{bytemsg, s.room}
