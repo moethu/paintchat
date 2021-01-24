@@ -84,11 +84,10 @@ function copyLink() {
     copyTextToClipboard(location.href);
 }
 
-function addLayer(id, col) {
+function addOrGetCanvas(id, col) {
     var layer = document.getElementById(id)
     if (layer) {
-        x = layer.getContext("2d")
-        return x
+        return layer
     }
 
     var canvas = document.createElement('canvas');
@@ -111,13 +110,13 @@ function addLayer(id, col) {
 
     div.appendChild(label)
 
-    x = canvas.getContext("2d")
-    return x
+    return canvas
 }
 
 function initialize(board) {
     url = `ws://${window.location.hostname}${location.port ? ':' + location.port : ''}/session/${board}`
     ws = new WebSocket(url);
+    document.getElementById("erase").onclick = function () { ws.send(`{"e":true}`); };
     ws.onopen = function (evt) {
         console.log("Connected to Server", url);
     }
@@ -128,20 +127,25 @@ function initialize(board) {
 
     ws.onmessage = function (evt) {
         msg = JSON.parse(evt.data)
-        var context = addLayer(msg.n, msg.c)
-        context.strokeStyle = msg.c;
-        if (msg.s) {
-            context.beginPath();
-            context.moveTo(msg.x, msg.y);
+        var canvas = addOrGetCanvas(msg.n, msg.c)
+        context = canvas.getContext("2d")
+        if (msg.e) {
+            context.clearRect(0, 0, canvas.width, canvas.height);
         } else {
-            context.lineTo(msg.x, msg.y);
-            context.stroke();
-            context.lineWidth = msg.w;
-            context.shadowColor = msg.c;
-            context.shadowBlur = 1;
-            context.shadowOffsetX = 0;
-            context.shadowOffsetY = 0;
-            moveLabel(msg.n, msg.x, msg.y)
+            context.strokeStyle = msg.c;
+            if (msg.s) {
+                context.beginPath();
+                context.moveTo(msg.x, msg.y);
+            } else {
+                context.lineTo(msg.x, msg.y);
+                context.stroke();
+                context.lineWidth = msg.w;
+                context.shadowColor = msg.c;
+                context.shadowBlur = 1;
+                context.shadowOffsetX = 0;
+                context.shadowOffsetY = 0;
+                moveLabel(msg.n, msg.x, msg.y)
+            }
         }
     }
 
