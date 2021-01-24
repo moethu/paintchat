@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -14,6 +15,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/moethu/go-randomdata"
+	stats "github.com/semihalev/gin-stats"
 	"github.com/thinkerou/favicon"
 )
 
@@ -32,10 +34,16 @@ func main() {
 		WriteTimeout: 600 * time.Second,
 	}
 
+	router.Use(stats.RequestStats())
+
+	router.GET("/stats", func(c *gin.Context) {
+		c.JSON(http.StatusOK, stats.Report())
+	})
 	router.Use(favicon.New("./static/favicon.ico"))
 	router.Any("/session/:sessionid", ServeWebsocket)
 	router.Static("/static/", "./static/")
 	router.GET("/", home)
+	router.GET("/boards", boards)
 	router.GET("/board/:sessionid", board)
 
 	log.Println("Starting HTTP Server on Port", port)
@@ -69,4 +77,13 @@ func board(c *gin.Context) {
 	sessionid := strings.ToLower(c.Params.ByName("sessionid"))
 	viewertemplate := template.Must(template.ParseFiles("templates/sketchboard.html"))
 	viewertemplate.Execute(c.Writer, sessionid)
+}
+
+func boards(c *gin.Context) {
+	var rooms []string
+	for room := range h.rooms {
+		connections := h.rooms[room]
+		rooms = append(rooms, fmt.Sprintf("%s (%d)", room, len(connections)))
+	}
+	c.JSON(200, rooms)
 }
