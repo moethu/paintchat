@@ -55,7 +55,7 @@ func (s subscription) readPump() {
 			c.history = append(c.history, pinfo)
 			bytemsg, err := json.Marshal(pinfo)
 			if err == nil {
-				m := message{bytemsg, s.room}
+				m := message{bytemsg, s.room, c.layer.name}
 				h.broadcast <- m
 			}
 		}
