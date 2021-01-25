@@ -13,7 +13,7 @@
     <script src="/static/paintchat.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            initialize("{{.}}");
+            chalkBoard.initialize("{{.}}");
         });
     </script>
 
@@ -22,18 +22,21 @@
 <body>
     <div id="canvasDiv">
         <div id="menu">
-            <div class="menubutton" onclick="copyLink()"><i class="fa fa-clone"></i></div>
-            <div class="menubutton" onclick="setThickness(10)"><i class="fa fa-circle"></i></div>
-            <div class="menubutton" onclick="setThickness(5)"><i class="fa fa-circle" style="font-size: 12px;"></i>
+            <div class="menubutton" onclick="chalkBoard.copyLink()"><i class="fa fa-clone"></i></div>
+            <div class="menubutton" onclick="chalkBoard.myLayer.setThickness(10)"><i class="fa fa-circle"></i></div>
+            <div class="menubutton" onclick="chalkBoard.myLayer.setThickness(5)"><i class="fa fa-circle"
+                    style="font-size: 12px;"></i>
             </div>
-            <div class="menubutton" onclick="setThickness(1)"><i class="fa fa-circle" style="font-size: 8px;"></i>
+            <div class="menubutton" onclick="chalkBoard.myLayer.setThickness(1)"><i class="fa fa-circle"
+                    style="font-size: 8px;"></i>
             </div>
             <div class="menubutton" id="erase"><i class="fa fa-eraser"></i></div>
+            <div class="menubutton" onclick="chalkBoard.export()"><i class="fa fa-save"></i></div>
         </div>
         <div id="title">
             <h1>{{.}}</h1>
         </div>
-        <canvas id="canvasSignature" width="600px" height="600px" style="position:absolute;"></canvas>
+        <canvas id="sketchpad" width="600px" height="600px" style="position:absolute;"></canvas>
     </div>
 </body>
 
