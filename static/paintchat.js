@@ -330,5 +330,9 @@ let chalkBoard = {
 
     code: function () {
         window.location.href = "https://github.com/moethu/paintchat";
+    },
+
+    cheers: function () {
+        window.location.href = "http://paint-chat.com/board/cheers";
     }
 }
