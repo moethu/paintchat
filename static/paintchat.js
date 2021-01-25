@@ -326,5 +326,9 @@ let chalkBoard = {
 
     erase: function () {
         chalkBoard.myLayer.erase(chalkBoard.socket)
+    },
+
+    code: function () {
+        window.location.href = "https://github.com/moethu/paintchat";
     }
 }
