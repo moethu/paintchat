@@ -7,6 +7,7 @@ import (
 type message struct {
 	data []byte
 	room string
+	name string
 }
 
 type subscription struct {
@@ -37,6 +38,13 @@ func (h *hub) run() {
 				connections = make(map[*connection]bool)
 				h.rooms[s.room] = connections
 			}
+
+			pinfo := pathinfo{Name: s.conn.layer.name, Color: s.conn.layer.color}
+			bytemsg, err := json.Marshal(pinfo)
+			if err == nil {
+				s.conn.send <- bytemsg
+			}
+
 			for c := range connections {
 				for _, pinfo := range c.history {
 					bytemsg, err := json.Marshal(pinfo)
@@ -60,13 +68,15 @@ func (h *hub) run() {
 		case m := <-h.broadcast:
 			connections := h.rooms[m.room]
 			for c := range connections {
-				select {
-				case c.send <- m.data:
-				default:
-					close(c.send)
-					delete(connections, c)
-					if len(connections) == 0 {
-						delete(h.rooms, m.room)
+				if c.layer.name != m.name {
+					select {
+					case c.send <- m.data:
+					default:
+						close(c.send)
+						delete(connections, c)
+						if len(connections) == 0 {
+							delete(h.rooms, m.room)
+						}
 					}
 				}
 			}
