@@ -8,8 +8,8 @@ the server is similar to a chat server with rooms implemented using go channels.
 
 ### Feature list
 
-- enters a random board for connections at root
-- common hangout board called "cheers"
+- all users enter a public board when opening the root url
+- create private boards
 - copy board url on click
 - three different pencil sizes
 - random name and color assignment
