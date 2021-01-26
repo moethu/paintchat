@@ -239,13 +239,13 @@ let chalkBoard = {
         canvas.id = id
         canvas.width = window.innerWidth
         canvas.height = window.innerHeight
-        canvas.style.zIndex = mylayer ? -1 : -2
+        canvas.style.zIndex = mylayer ? -2 : -3
         canvas.style.position = "absolute"
         div.appendChild(canvas)
 
         let label = document.createElement('div')
         label.id = "label_" + id
-        label.innerHTML = id
+        label.innerHTML = `<i class="fas fa-pen"></i> ${id}`
         label.className = "label"
         label.style.backgroundColor = color
         label.style.color = chalkBoard.invertColor(color, true)
