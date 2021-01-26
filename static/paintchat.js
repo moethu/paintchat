@@ -223,7 +223,7 @@ let chalkBoard = {
             msg = JSON.parse(evt.data)
             if (!chalkBoard.myLayer) {
                 let cpick = document.getElementById("colorpicker")
-                cpick.setAttribute('value', msg.c)
+                cpick.value = msg.c
                 chalkBoard.myLayer = chalkBoard.getOrCreateLayer(msg.n, msg.c, true)
             } else {
                 chalkBoard.drawPathInfo(msg)
