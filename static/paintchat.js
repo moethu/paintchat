@@ -46,6 +46,13 @@ class Layer {
         d.style.top = y + 'px'
     }
 
+    changeColor(color) {
+        let d = document.getElementById(`label_${this.name}`)
+        d.style.background = color
+        d.style.color = chalkBoard.invertColor(color, true)
+        this.color = color
+    }
+
     erase(socket) {
         let context = this.canvas.getContext("2d")
         context.clearRect(0, 0, this.canvas.width, this.canvas.height)
@@ -215,6 +222,8 @@ let chalkBoard = {
         chalkBoard.socket.onmessage = function (evt) {
             msg = JSON.parse(evt.data)
             if (!chalkBoard.myLayer) {
+                let cpick = document.getElementById("colorpicker")
+                cpick.setAttribute('value', msg.c)
                 chalkBoard.myLayer = chalkBoard.getOrCreateLayer(msg.n, msg.c, true)
             } else {
                 chalkBoard.drawPathInfo(msg)
@@ -226,6 +235,7 @@ let chalkBoard = {
         if (!chalkBoard.layers.hasOwnProperty(pinfo.n)) {
             chalkBoard.getOrCreateLayer(pinfo.n, pinfo.c, false)
         }
+        chalkBoard.layers[pinfo.n].changeColor(pinfo.c)
         chalkBoard.layers[pinfo.n].drawPathInfo(pinfo)
     },
 
@@ -329,10 +339,15 @@ let chalkBoard = {
     },
 
     code: function () {
-        window.location.href = "https://github.com/moethu/paintchat";
+        window.location.href = "https://github.com/moethu/paintchat"
     },
 
     cheers: function () {
-        window.location.href = "./random";
+        window.location.href = "./random"
+    },
+
+    changeColor: function (e) {
+        chalkBoard.myLayer.changeColor(e.value)
+
     }
 }

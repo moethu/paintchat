@@ -50,7 +50,9 @@ func (s subscription) readPump() {
 
 		var pinfo pathinfo
 		if err := json.Unmarshal(msg, &pinfo); err == nil {
-			pinfo.Color = c.layer.color
+			if pinfo.Color == "" {
+				pinfo.Color = c.layer.color
+			}
 			pinfo.Name = c.layer.name
 			c.history = append(c.history, pinfo)
 			bytemsg, err := json.Marshal(pinfo)
