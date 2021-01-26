@@ -343,7 +343,13 @@ let chalkBoard = {
     },
 
     cheers: function () {
-        window.location.href = "./random"
+        let title = prompt("Give your board a name", "")
+        if (title != null) {
+            if (title == "") { window.location.href = "./random" }
+            else {
+                window.location.href = title
+            }
+        }
     },
 
     changeColor: function (e) {
