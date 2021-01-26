@@ -69,12 +69,16 @@ func main() {
 }
 
 func home(c *gin.Context) {
-	sessionid := randomdata.City()
-	c.Redirect(307, "./board/"+sessionid)
+	c.Redirect(307, "./board/hello%20paintchat")
 }
 
 func board(c *gin.Context) {
 	sessionid := strings.ToLower(c.Params.ByName("sessionid"))
+	if sessionid == "" || sessionid == "random" {
+		sessionid = randomdata.City()
+		c.Redirect(307, "./"+sessionid)
+		return
+	}
 	viewertemplate := template.Must(template.ParseFiles("templates/sketchboard.html"))
 	viewertemplate.Execute(c.Writer, sessionid)
 }

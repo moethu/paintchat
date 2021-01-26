@@ -333,6 +333,6 @@ let chalkBoard = {
     },
 
     cheers: function () {
-        window.location.href = "http://paint-chat.com/board/cheers";
+        window.location.href = "./random";
     }
 }
