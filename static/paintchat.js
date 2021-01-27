@@ -259,7 +259,6 @@ let chalkBoard = {
         }
         chalkBoard.socket.onmessage = function (evt) {
             msg = JSON.parse(evt.data)
-            console.log(msg)
             if (msg.b != "") {
                 if (!chalkBoard.galleryTiles.hasOwnProperty(msg.b)) {
                     let tile = new GalleryTile(msg.b)
