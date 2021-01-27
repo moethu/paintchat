@@ -4,12 +4,13 @@ class Layer {
         this.color = color
         this.canvas = canvas
         this.thickness = 1
+        this.erasor = false
     }
 
     setThickness(t) { this.thickness = t }
 
     send(socket, x, y, isDrawing, isStart) {
-        let path = new PathInfo(x, y, isDrawing, isStart, this.thickness, this.color, this.name)
+        let path = new PathInfo(x, y, isDrawing, isStart, this.thickness, this.color, this.name, this.erasor)
         this.drawPathInfo(path)
         if (socket) {
             socket.send(JSON.stringify(path))
@@ -19,7 +20,7 @@ class Layer {
     drawPathInfo(msg) {
         let context = this.canvas.getContext("2d")
         if (msg.e) {
-            context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+            context.clearRect(msg.x - 5, msg.y - 5, 10, 10)
         } else {
             context.strokeStyle = msg.c
             if (msg.s) {
@@ -53,15 +54,20 @@ class Layer {
         this.color = color
     }
 
-    erase(socket) {
-        let context = this.canvas.getContext("2d")
-        context.clearRect(0, 0, this.canvas.width, this.canvas.height)
-        socket.send(`{"e":true}`)
+    erase() {
+        if (this.erasor == true) {
+            this.erasor = false
+            document.getElementById("erase").style.color = ""
+        }
+        else {
+            document.getElementById("erase").style.color = "#555"
+            this.erasor = true
+        }
     }
 }
 
 class PathInfo {
-    constructor(x, y, isDrawing, isStart, thickness, color, name) {
+    constructor(x, y, isDrawing, isStart, thickness, color, name, erase) {
         this.d = isDrawing
         this.x = x
         this.y = y
@@ -69,6 +75,7 @@ class PathInfo {
         this.w = thickness
         this.c = color
         this.n = name
+        this.e = erase
     }
 }
 
@@ -383,7 +390,7 @@ let chalkBoard = {
     },
 
     erase: function () {
-        chalkBoard.myLayer.erase(chalkBoard.socket)
+        chalkBoard.myLayer.erase()
     },
 
     code: function () {

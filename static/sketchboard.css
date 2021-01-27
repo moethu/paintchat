@@ -48,6 +48,10 @@ h1,h2,h3 {
     color: grey;
 }
 
+.menubuttonactivated {
+    color: grey;
+}
+
 .label {
     position: absolute;
     padding: 5px;
