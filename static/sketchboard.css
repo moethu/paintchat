@@ -68,8 +68,9 @@ h1,h2,h3 {
     position:absolute;
     bottom:110px;
     padding-left: 20px;
-    width:90%;
+    width:95%;
     height:20px;
+    border-top: 1px solid #555;
 }
 
 .tile{
