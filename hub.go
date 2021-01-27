@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"sort"
 )
 
 type message struct {
@@ -29,10 +30,44 @@ var h = hub{
 	rooms:      make(map[string]map[*connection]bool),
 }
 
+func (h *hub) getMostPopular(currentRoom string, length int) []string {
+	names := make([]string, 0, len(h.rooms))
+
+	for room := range h.rooms {
+		if room != currentRoom {
+			names = append(names, room)
+		}
+	}
+
+	sort.Slice(names, func(i, j int) bool {
+		return len(h.rooms[names[i]]) > len(h.rooms[names[j]])
+	})
+
+	if len(names) < length {
+		return names
+	} else {
+		return names[:length]
+	}
+}
+
 func (h *hub) run() {
 	for {
 		select {
 		case s := <-h.register:
+
+			for _, room := range h.getMostPopular(s.room, 4) {
+				connections := h.rooms[room]
+				for c := range connections {
+					for _, pinfo := range c.history {
+						pinfo.Board = room
+						bytemsg, err := json.Marshal(pinfo)
+						if err == nil {
+							s.conn.send <- bytemsg
+						}
+					}
+				}
+			}
+
 			connections := h.rooms[s.room]
 			if connections == nil {
 				connections = make(map[*connection]bool)
