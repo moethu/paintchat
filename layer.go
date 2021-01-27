@@ -22,6 +22,7 @@ type point struct {
 }
 
 type pathinfo struct {
+	Board   string `json:"b"`
 	Name    string `json:"n"`
 	Color   string `json:"c"`
 	Width   int    `json:"w"`
