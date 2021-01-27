@@ -82,7 +82,7 @@ func main() {
 }
 
 func home(c *gin.Context) {
-	c.Redirect(307, "./board/hello%20paintchat")
+	c.Redirect(307, "./board/hello%20world")
 }
 
 func board(c *gin.Context) {
