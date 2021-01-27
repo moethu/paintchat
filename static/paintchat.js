@@ -72,10 +72,47 @@ class PathInfo {
     }
 }
 
+class GalleryTile {
+    constructor(name) {
+        this.name = name
+        this.scaleFactor = 0.1
+
+        this.canvas = document.createElement('canvas')
+        let div = document.getElementById("gallery")
+        this.canvas.width = 120
+        this.canvas.height = 80
+        this.canvas.classList.add("tile")
+        this.canvas.title = name
+        this.canvas.onclick = function () {
+            window.location.href = "./" + name
+        }
+        div.appendChild(this.canvas)
+    }
+
+    draw(msg) {
+        let context = this.canvas.getContext("2d")
+        if (msg.e) {
+            context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+        } else {
+            context.strokeStyle = msg.c
+            if (msg.s) {
+                context.beginPath()
+                context.moveTo(msg.x * this.scaleFactor, msg.y * this.scaleFactor)
+            } else {
+                context.lineTo(msg.x * this.scaleFactor, msg.y * this.scaleFactor)
+                context.lineWidth = msg.w * this.scaleFactor
+                context.stroke()
+            }
+        }
+    }
+}
+
 let chalkBoard = {
     socket: undefined,
     layers: {},
     myLayer: undefined,
+    galleryTiles: {},
+    footer: 120,
 
     initialize(board) {
         chalkBoard.connect(board)
@@ -85,19 +122,20 @@ let chalkBoard = {
         }
 
         window.onresize = function () {
-            let cs = Array.prototype.slice.call(document.getElementsByTagName('canvas'))
+
+            let cs = Array.prototype.slice.call(document.getElementsByClassName('layer'))
             cs.forEach(canvas => {
                 let ctx = canvas.getContext("2d")
                 let temp = ctx.getImageData(0, 0, canvas.width, canvas.height)
                 canvas.width = window.innerWidth
-                canvas.height = window.innerHeight
+                canvas.height = window.innerHeight - chalkBoard.footer
                 ctx.putImageData(temp, 0, 0)
             })
         }
 
         let sigCanvas = document.getElementById("sketchpad")
         sigCanvas.width = window.innerWidth
-        sigCanvas.height = window.innerHeight
+        sigCanvas.height = window.innerHeight - chalkBoard.footer
         let context = sigCanvas.getContext("2d")
         let is_touch_device = 'ontouchstart' in document.documentElement
 
@@ -221,12 +259,21 @@ let chalkBoard = {
         }
         chalkBoard.socket.onmessage = function (evt) {
             msg = JSON.parse(evt.data)
-            if (!chalkBoard.myLayer) {
-                let cpick = document.getElementById("colorpicker")
-                cpick.value = msg.c
-                chalkBoard.myLayer = chalkBoard.getOrCreateLayer(msg.n, msg.c, true)
+            console.log(msg)
+            if (msg.b != "") {
+                if (!chalkBoard.galleryTiles.hasOwnProperty(msg.b)) {
+                    let tile = new GalleryTile(msg.b)
+                    chalkBoard.galleryTiles[msg.b] = tile
+                }
+                chalkBoard.galleryTiles[msg.b].draw(msg)
             } else {
-                chalkBoard.drawPathInfo(msg)
+                if (!chalkBoard.myLayer) {
+                    let cpick = document.getElementById("colorpicker")
+                    cpick.value = msg.c
+                    chalkBoard.myLayer = chalkBoard.getOrCreateLayer(msg.n, msg.c, true)
+                } else {
+                    chalkBoard.drawPathInfo(msg)
+                }
             }
         }
     },
@@ -248,7 +295,8 @@ let chalkBoard = {
         let div = document.getElementById("canvasDiv")
         canvas.id = id
         canvas.width = window.innerWidth
-        canvas.height = window.innerHeight
+        canvas.height = window.innerHeight - chalkBoard.footer
+        canvas.classList.add("layer")
         canvas.style.zIndex = mylayer ? -2 : -3
         canvas.style.position = "absolute"
         div.appendChild(canvas)

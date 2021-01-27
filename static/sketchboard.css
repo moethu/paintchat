@@ -14,7 +14,7 @@ html {
 body { font-family: "Gill Sans Extrabold", Helvetica, sans-serif;
 color:rgba(255, 255, 255, .8) }
 
-h1 {
+h1,h2,h3 {
     font-family: 'Chalk', Fallback, sans-serif;
   }
 
@@ -30,7 +30,7 @@ h1 {
     top: 100px;
     left: 0px;
     padding: 10px;
-    height: 260px;
+    height: 265px;
     width: 20px;
     z-index: 2;
 }
@@ -55,6 +55,26 @@ h1 {
     z-index: -1;
     border-radius: 0.2rem;
     box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, .3), 0 0.0625rem 0.125rem rgba(0, 0, 0, .2);
+}
+
+.layer {
+    position:absolute;
+    top: 0px;
+    left: 0px;
+}
+
+#footer {
+    font-family: 'Chalk', Fallback, sans-serif;
+    position:absolute;
+    bottom:110px;
+    padding-left: 20px;
+    width:90%;
+    height:20px;
+}
+
+.tile{
+    margin: 10px;
+    cursor: pointer; 
 }
 
 input[type=color] {
