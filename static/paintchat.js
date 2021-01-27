@@ -265,6 +265,7 @@ let chalkBoard = {
                     chalkBoard.galleryTiles[msg.b] = tile
                 }
                 chalkBoard.galleryTiles[msg.b].draw(msg)
+                document.getElementById("gallerytitle").innerHTML = "other boards"
             } else {
                 if (!chalkBoard.myLayer) {
                     let cpick = document.getElementById("colorpicker")
