@@ -25,8 +25,15 @@ func main() {
 	flag.Parse()
 	log.SetFlags(0)
 
+	devenv := true
+	port := ":8085"
+	if os.Getenv("DEV") == "" {
+		devenv = false
+		port = ":443"
+	}
+
 	router := gin.Default()
-	port := ":80"
+
 	srv := &http.Server{
 		Addr:         port,
 		Handler:      router,
@@ -49,8 +56,14 @@ func main() {
 	log.Println("Starting HTTP Server on Port", port)
 
 	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
+		if devenv {
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Fatalf("listen: %s\n", err)
+			}
+		} else {
+			if err := srv.ListenAndServeTLS("../paint-chat.com_ssl_certificate.cer", "../_.paint-chat.com_private_key.key"); err != nil && err != http.ErrServerClosed {
+				log.Fatalf("listen: %s\n", err)
+			}
 		}
 	}()
 
