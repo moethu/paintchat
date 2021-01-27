@@ -248,7 +248,7 @@ let chalkBoard = {
     },
 
     connect(board) {
-        url = `ws://${window.location.hostname}${location.port ? ':' + location.port : ''}/session/${board}`
+        url = `wss://${window.location.hostname}${location.port ? ':' + location.port : ''}/session/${board}`
         chalkBoard.socket = new WebSocket(url)
         chalkBoard.socket.onopen = function (evt) {
             console.log("Connected to Server", url)
