@@ -27,12 +27,12 @@ class Layer {
                 context.moveTo(msg.x, msg.y)
             } else {
                 context.lineTo(msg.x, msg.y)
-                context.stroke()
                 context.lineWidth = msg.w
                 context.shadowColor = msg.c
                 context.shadowBlur = 1
                 context.shadowOffsetX = 0
                 context.shadowOffsetY = 0
+                context.stroke()
                 this.moveLabel(msg.x, msg.y)
             }
         }
