@@ -435,7 +435,7 @@ let chalkBoard = {
     },
 
     cheers: function () {
-        let title = prompt("Give your board a name", "")
+        let title = prompt("Give your new board a name.\nWant to make it private - add private to the name.", "")
         if (title != null) {
             if (title == "") { window.location.href = "./random" }
             else {
