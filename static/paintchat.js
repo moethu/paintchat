@@ -5,6 +5,7 @@ class Layer {
         this.canvas = canvas
         this.thickness = 1
         this.erasor = false
+        this.pointBuffer = {}
     }
 
     setThickness(t) { this.thickness = t }
@@ -19,13 +20,18 @@ class Layer {
 
     drawPathInfo(msg) {
         let context = this.canvas.getContext("2d")
-        if (msg.e) {
-            context.clearRect(msg.x - 5, msg.y - 5, 10, 10)
-        } else {
-            context.strokeStyle = msg.c
-            if (msg.s) {
+        context.strokeStyle = msg.c
+        if (msg.s) {
+            if (msg.e) {
+                this.pointBuffer = new Point(msg.x, msg.y)
+            } else {
                 context.beginPath()
                 context.moveTo(msg.x, msg.y)
+            }
+        } else {
+            if (msg.e) {
+                Erasor.ErasePath(context, this.pointBuffer, new Point(msg.x, msg.y), msg.w * 6)
+                this.pointBuffer = new Point(msg.x, msg.y)
             } else {
                 context.lineTo(msg.x, msg.y)
                 context.lineWidth = msg.w
@@ -34,8 +40,8 @@ class Layer {
                 context.shadowOffsetX = 0
                 context.shadowOffsetY = 0
                 context.stroke()
-                this.moveLabel(msg.x, msg.y)
             }
+            this.moveLabel(msg.x, msg.y)
         }
     }
 
@@ -79,10 +85,44 @@ class PathInfo {
     }
 }
 
+class Point {
+    constructor(x, y) {
+        this.x = x
+        this.y = y
+    }
+}
+
+class Erasor {
+    static DistanceBetweenTwoPoins(p1, p2) {
+        let a = p1.x - p2.x
+        let b = p1.y - p2.y
+        return Math.sqrt(a * a + b * b)
+    }
+
+    static DivideIntoSegments(startPoint, endPoint, segments) {
+        let dx = (endPoint.x - startPoint.x) / segments
+        let dy = (endPoint.y - startPoint.y) / segments
+        let points = []
+        for (let i = 1; i < segments; i++)
+            points.push({ x: startPoint.x + i * dx, y: startPoint.y + i * dy })
+        return points
+    }
+
+    static ErasePath(context, startPoint, endPoint, width) {
+        let d = Erasor.DistanceBetweenTwoPoins(startPoint, endPoint)
+        let p = Erasor.DivideIntoSegments(startPoint, endPoint, d / width)
+        p = [startPoint, ...p, endPoint]
+        p.forEach(pt => {
+            context.clearRect(pt.x - width / 2, pt.y - width / 2, width, width)
+        })
+    }
+}
+
 class GalleryTile {
     constructor(name) {
         this.name = name
         this.scaleFactor = 0.1
+        this.pointBuffer = {}
 
         this.canvas = document.createElement('canvas')
         let div = document.getElementById("gallery")
@@ -98,13 +138,18 @@ class GalleryTile {
 
     draw(msg) {
         let context = this.canvas.getContext("2d")
-        if (msg.e) {
-            context.clearRect(0, 0, this.canvas.width, this.canvas.height)
-        } else {
-            context.strokeStyle = msg.c
-            if (msg.s) {
+        context.strokeStyle = msg.c
+        if (msg.s) {
+            if (msg.e) {
+                this.pointBuffer = new Point(msg.x * this.scaleFactor, msg.y * this.scaleFactor)
+            } else {
                 context.beginPath()
                 context.moveTo(msg.x * this.scaleFactor, msg.y * this.scaleFactor)
+            }
+        } else {
+            if (msg.e) {
+                Erasor.ErasePath(context, this.pointBuffer, new Point(msg.x * this.scaleFactor, msg.y * this.scaleFactor), msg.w * this.scaleFactor * 6)
+                this.pointBuffer = new Point(msg.x * this.scaleFactor, msg.y * this.scaleFactor)
             } else {
                 context.lineTo(msg.x * this.scaleFactor, msg.y * this.scaleFactor)
                 context.lineWidth = msg.w * this.scaleFactor
@@ -123,10 +168,6 @@ let chalkBoard = {
 
     initialize(board) {
         chalkBoard.connect(board)
-
-        document.getElementById("erase").onclick = function () {
-            chalkBoard.erase()
-        }
 
         window.onresize = function () {
 
@@ -255,7 +296,7 @@ let chalkBoard = {
     },
 
     connect(board) {
-        url = `wss://${window.location.hostname}${location.port ? ':' + location.port : ''}/session/${board}`
+        let url = `wss://${window.location.hostname}${location.port ? ':' + location.port : ''}/session/${board}`
         chalkBoard.socket = new WebSocket(url)
         chalkBoard.socket.onopen = function (evt) {
             console.log("Connected to Server", url)
@@ -265,7 +306,7 @@ let chalkBoard = {
             socket = null
         }
         chalkBoard.socket.onmessage = function (evt) {
-            msg = JSON.parse(evt.data)
+            let msg = JSON.parse(evt.data)
             if (msg.b != "") {
                 if (!chalkBoard.galleryTiles.hasOwnProperty(msg.b)) {
                     let tile = new GalleryTile(msg.b)
@@ -387,10 +428,6 @@ let chalkBoard = {
 
     copyLink: function () {
         chalkBoard.copyTextToClipboard(location.href)
-    },
-
-    erase: function () {
-        chalkBoard.myLayer.erase()
     },
 
     code: function () {
