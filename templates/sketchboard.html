@@ -17,7 +17,6 @@
             chalkBoard.initialize("{{.}}");
         });
     </script>
-
 </head>
 
 <body>
@@ -35,7 +34,8 @@
             <div class="menubutton" title="Thin Pen" onclick="chalkBoard.myLayer.setThickness(1)"><i
                     class="fa fa-circle" style="font-size: 8px;"></i>
             </div>
-            <div class="menubutton" title="Erase what you've drawn" id="erase"><i class="fa fa-eraser"></i></div>
+            <div class="menubutton" title="Erase what you've drawn" id="erase" onclick="chalkBoard.myLayer.erase()"><i
+                    class="fa fa-eraser"></i></div>
             <div class="menubutton" title="Pick your color"><input id="colorpicker" type="color" value="#000"
                     onchange="chalkBoard.changeColor(this)" onkeyup="chalkBoard.changeColor(this)"></div>
             <div class="menubutton" title="Download Image as PNG" onclick="chalkBoard.export()"><i
