@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"sort"
+	"strings"
 )
 
 type message struct {
@@ -34,7 +35,7 @@ func (h *hub) getMostPopular(currentRoom string, length int) []string {
 	names := make([]string, 0, len(h.rooms))
 
 	for room := range h.rooms {
-		if room != currentRoom {
+		if room != currentRoom && !strings.Contains(room, "private") {
 			names = append(names, room)
 		}
 	}
