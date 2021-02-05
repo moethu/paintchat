@@ -22,16 +22,16 @@ type point struct {
 }
 
 type pathinfo struct {
-	Board   string `json:"b"`
-	Name    string `json:"n"`
-	Color   string `json:"c"`
-	Width   int    `json:"w"`
-	Path    int    `json:"p"`
-	Drawing bool   `json:"d"`
-	Start   bool   `json:"s"`
-	X       int    `json:"x"`
-	Y       int    `json:"y"`
-	Erase   bool   `json:"e"`
+	Board   string  `json:"b"`
+	Name    string  `json:"n"`
+	Color   string  `json:"c"`
+	Width   int     `json:"w"`
+	Path    int     `json:"p"`
+	Drawing bool    `json:"d"`
+	Start   bool    `json:"s"`
+	X       float32 `json:"x"`
+	Y       float32 `json:"y"`
+	Erase   bool    `json:"e"`
 }
 
 func NewLayer() layer {
