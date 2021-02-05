@@ -4,15 +4,25 @@
     src: url(chawpwebfont.woff)} 
 
 html { 
-    background: url(board.jpeg) no-repeat center center fixed; 
+   background: url(board.jpeg) no-repeat center center fixed; 
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-  }
+    margin: 0; height: 100%; overflow: hidden;
+}
 
-body { font-family: "Gill Sans Extrabold", Helvetica, sans-serif;
-color:rgba(255, 255, 255, .8) }
+body {
+    font-family: "Gill Sans Extrabold", Helvetica, sans-serif;
+    margin: 0; height: 100%; overflow: hidden;
+    color:rgba(255, 255, 255, .8);
+    touch-action: none;
+
+}
+
+.layer::-webkit-scrollbar {
+    display: none;
+  }
 
 h1,h2,h3 {
     font-family: 'Chalk', Fallback, sans-serif;
@@ -20,18 +30,25 @@ h1,h2,h3 {
 
 #title {
     position: absolute;
-    padding-left: 20px;
+    top: 10px;
+    left: 100px;
     z-index: -5;
+    touch-action: none;
+}
+
+.container{
+    position: absolute;
+    touch-action: none;
 }
 
 #menu {
-    position: absolute;
+    position: fixed;
     background-color: #000;
-    top: 100px;
+    top: 0px;
     left: 0px;
     padding: 10px;
-    height: 265px;
-    width: 20px;
+    height: 100%;
+    width: 35px;
     z-index: 2;
 }
 
@@ -40,8 +57,8 @@ h1,h2,h3 {
     padding-top: 5px;
     padding-bottom: 5px;
     text-align: center;
-    height: 20px;
-    width: 20px;
+    height: 32px;
+    width: 32px;
 }
 
 .menubutton:hover{
@@ -63,6 +80,8 @@ h1,h2,h3 {
 
 .layer {
     position:absolute;
+    overflow: hidden;
+    touch-action: none;
     top: 0px;
     left: 0px;
 }

@@ -6,53 +6,46 @@
     <meta property="og:title" content="paint-chat.com" />
     <meta property="og:description" content="a simple digital drawing community">
     <meta property="og:image" content="http://paint-chat.com/static/screenshot.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=0.8">
+    <meta name="viewport" content="width=device-width, initial-scale=1; maximum-scale=1; user-scalable=no;">
     <title>paint-chat.com</title>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="/static/sketchboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
     <script src="/static/paintchat.js"></script>
     <script type="text/javascript">
+        let c = null
         $(document).ready(function () {
-            chalkBoard.initialize("{{.}}");
+            c = new ChalkBoard("{{.}}");
         });
     </script>
 
 </head>
 
 <body>
-    <div id="canvasDiv">
+    <div id="canvasDiv" class="container">
         <div id="menu">
-            <div class="menubutton" title="Click here to create a new private board" onclick="chalkBoard.cheers()"><i
+            <div class="menubutton" title="Click here to create a new private board" onclick="c.cheers()"><i
                     class="fa fa-chalkboard"></i></div>
-            <div class="menubutton" title="Copy Board URL" onclick="chalkBoard.copyLink()"><i class="far fa-clone"></i>
+            <div class="menubutton" title="Copy Board URL" onclick="c.copyLink()"><i class="far fa-clone"></i>
             </div>
-            <div class="menubutton" title="Bold Pen" onclick="chalkBoard.myLayer.setThickness(10)"><i
-                    class="fa fa-circle"></i></div>
-            <div class="menubutton" title="Medium Pen" onclick="chalkBoard.myLayer.setThickness(5)"><i
-                    class="fa fa-circle" style="font-size: 12px;"></i>
+            <div class="menubutton" title="Pan" id="pan" onclick="c.pan()"><i class="far fa-hand-paper"></i></div>
+            <div class="menubutton" title="Bold Pen" onclick="c.setThickness(10)"><i class="fa fa-circle"></i></div>
+            <div class="menubutton" title="Medium Pen" onclick="c.setThickness(5)"><i class="fa fa-circle"
+                    style="font-size: 12px;"></i>
             </div>
-            <div class="menubutton" title="Thin Pen" onclick="chalkBoard.myLayer.setThickness(1)"><i
-                    class="fa fa-circle" style="font-size: 8px;"></i>
+            <div class="menubutton" title="Thin Pen" onclick="c.setThickness(1)"><i class="fa fa-circle"
+                    style="font-size: 8px;"></i>
             </div>
-            <div class="menubutton" title="Erase what you've drawn" id="erase" onclick="chalkBoard.myLayer.erase()"><i
+            <div class="menubutton" title="Erase what you've drawn" id="erase" onclick="c.erase()"><i
                     class="fa fa-eraser"></i></div>
             <div class="menubutton" title="Pick your color"><input id="colorpicker" type="color" value="#000"
-                    onchange="chalkBoard.changeColor(this)" onkeyup="chalkBoard.changeColor(this)"></div>
-            <div class="menubutton" title="Download Image as PNG" onclick="chalkBoard.export()"><i
-                    class="far fa-save"></i></div>
-            <div class="menubutton" title="Explore Paintchat's Code" onclick="chalkBoard.code()"><i
-                    class="fa fa-code"></i></div>
-        </div>
-        <div id="title">
-            <h1>{{.}}</h1>
+                    onchange="c.changeColor(this)" onkeyup="c.changeColor(this)"></div>
+            <div class="menubutton" title="Download Image as PNG" onclick="c.export()"><i class="far fa-save"></i></div>
+            <div class="menubutton" title="Explore Paintchat's Code" onclick="c.code()"><i class="fa fa-code"></i>
+            </div>
         </div>
         <canvas id="sketchpad" width="600px" height="600px" class="layer"></canvas>
-
-        <div id="footer">
-            <span id="gallerytitle"></span>
-            <div id="gallery"></div>
-        </div>
+        <canvas id="board" width="600px" height="600px" class="layer"></canvas>
     </div>
 </body>
 
