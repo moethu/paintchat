@@ -30,6 +30,11 @@ func main() {
 	if os.Getenv("DEV") == "" {
 		devenv = false
 		port = ":443"
+		httpRouter := gin.Default()
+		httpRouter.GET("/", func(c *gin.Context) {
+			c.Redirect(302, "https://paint-chat.com/")
+		})
+		go httpRouter.Run(":80")
 	}
 
 	router := gin.Default()
